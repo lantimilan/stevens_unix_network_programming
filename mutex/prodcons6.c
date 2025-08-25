@@ -20,6 +20,7 @@ struct {
   pthread_mutex_t mutex;
   pthread_cond_t cond;
   int nready; // number ready for consumer
+  int nsignal; // number of signal calls
 } nready = {
   PTHREAD_MUTEX_INITIALIZER,
   PTHREAD_COND_INITIALIZER
@@ -60,6 +61,8 @@ int main(int argc, char* argv[])
   // and wait for consumer thread
   pthread_join(tid_consume, NULL);
 
+  printf("num signal called = %d\n", nready.nsignal);
+
   exit(0);
 }
 
@@ -82,9 +85,13 @@ produce(void *arg)
     if (nready.nready == 0) { // we are the first one add to empty buf
       // must hold lock when signal if predictive scheduling is required, per posix
       pthread_cond_signal(&nready.cond); // signal consumer
+      nready.nsignal++;
     }
     nready.nready++;
     pthread_mutex_unlock(&nready.mutex);
+
+    // introduce scheduling variety
+    sleep(1);
 
     // how many items that this thread put into buf
     // this arg is per thread so do not need to be
@@ -135,3 +142,10 @@ consume(void *arg)
 //int pthread_mutex_destroy(pthread_mutex_t *mptr);
 //int pthread_cond_init(pthread_cond_t *cptr, const pthread_condattr_t *attr);
 //int pthread_cond_destroy(pthread_cond_t *cptr);
+
+// with sleep(1), we got
+// count[0] = 10
+// count[1] = 10
+// count[2] = 10
+// total = 30, must match nitems = 30
+// num signal called = 16
