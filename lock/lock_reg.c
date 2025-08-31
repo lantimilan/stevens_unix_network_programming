@@ -2,7 +2,7 @@
 #include "unpipc.h"
 
 int
-lock_reg(int fd, int cmd, in type, off_t offset, int whence, off_t len)
+lock_reg(int fd, int cmd, int type, off_t offset, int whence, off_t len)
 {
   struct flock lock;
 

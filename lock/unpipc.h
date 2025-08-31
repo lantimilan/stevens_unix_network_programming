@@ -20,6 +20,8 @@
 // for strlen
 #include <string.h>
 
+#include <time.h>
+
 // for gettimeofday
 #include <sys/time.h>
 
