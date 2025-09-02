@@ -26,6 +26,9 @@
 // for mmap
 #include <sys/mman.h>
 
+// for semaphore
+#include <semaphore.h>
+
 // for open
 #include <fcntl.h>
 
@@ -48,7 +51,6 @@
 void err_sys(const char *, ...);
 void err_msg(const char *fmt, ...);
 void err_quit(const char *fmt, ...);
-void err_ret(const char *fmt, ...);
 
 // implemented in readline.c
 ssize_t readline(int fd, void *vptr, size_t maxlen);
